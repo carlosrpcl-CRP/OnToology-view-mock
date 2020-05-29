@@ -3,6 +3,7 @@ from flask import request
 from datetime import datetime
 import time
 
+
 app = Flask(__name__)
 
 
@@ -55,7 +56,7 @@ def profile():
         "previsual": False,
         "previsual_page_available": False,
         "notes": "notes",
-        "progress": 0.0,
+        "progress": 0,
         "user": user
     },
         {
@@ -103,25 +104,25 @@ def profile_ontologies(repo):
             {
                 "ar2dtool": True,
                 "ontology": "/ontology1-with-themis.owl",
-                "oops": True,
-                "owl2jsonld": True,
+                "oops": False,
+                "owl2jsonld": False,
                 "pname": "j123",
                 "published": True,
                 "themis_results": 90,
-                "widoco": True, },
+                "widoco": False, },
             {
-                "ar2dtool": True,
+                "ar2dtool": False,
                 "ontology": "/ontology2-without-themis.owl",
                 "oops": True,
-                "owl2jsonld": True,
+                "owl2jsonld": False,
                 "pname": "j123",
                 "published": True,
                 "widoco": True, },
             {
-                "ar2dtool": True,
+                "ar2dtool": False,
                 "ontology": "/ontology3-no-published.owl",
-                "oops": True,
-                "owl2jsonld": True,
+                "oops": False,
+                "owl2jsonld": False,
                 "pname": "j123",
                 "published": False,
                 "widoco": True, },
@@ -130,6 +131,7 @@ def profile_ontologies(repo):
 
 @app.route('/repository/<int:index>')
 def repository (index):
+    repo = request.args.get("repo")
     user = {"email": "ontoology@ontoology.com", "is_authenticated": True}
     repos = [{
     "id": "123",
@@ -172,6 +174,33 @@ def repository (index):
         'ontology': 'one'
     }
     ]
+    ontologies=[
+            {
+                "ar2dtool": False,
+                "ontology": "/ontology1-with-themis.owl",
+                "oops": True,
+                "owl2jsonld": True,
+                "pname": "j123",
+                "published": True,
+                "themis_results": 90,
+                "widoco": True, },
+            {
+                "ar2dtool": True,
+                "ontology": "/ontology2-without-themis.owl",
+                "oops": False,
+                "owl2jsonld": True,
+                "pname": "j123",
+                "published": True,
+                "widoco": True, },
+            {
+                "ar2dtool": True,
+                "ontology": "/ontology3-no-published.owl",
+                "oops": True,
+                "owl2jsonld": True,
+                "pname": "j123",
+                "published": False,
+                "widoco": False, },
+        ]
     if(0<=index and index<len(repos)):    
         index=index
     else:
@@ -179,7 +208,7 @@ def repository (index):
     reques = {"user": user,
               "session": {"avatar_url": "https://github.githubassets.com/images/modules/logos_page/Octocat.png"}}
     return render_template('repository.html', repos=repos, manager=False, request=reques, user=user, pnames=pnames,
-                           strftime=time.strftime,ontologies=profile_ontologies(repos[index]), index=index)
+                           strftime=time.strftime,ontologies=ontologies, index=index)
 
 
 if __name__ == "__main__":

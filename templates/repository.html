@@ -1,7 +1,32 @@
 {% extends "base.html"%} {%block body%}
 <!--CRP: script for the search bar from the left side-->
 <style>
-    
+    /*Tittle*/
+    .repo_tittle{
+     font-family: 'Merriweather', serif;   
+    }
+    .progressBar{
+        position: relative;
+        margin: 4px;
+        float:left;
+        text-align: center;
+    }
+    .barOverflow{ /* Wraps the rotating .bar */
+        position: relative;
+        overflow: hidden; /* Comment this line to understand the trick */
+        width: 90px; height: 45px; /* Half circle (overflow) */
+        margin-bottom: -14px; /* bring the numbers up */
+    }
+    .bar{
+        position: absolute;
+        top: 0; left: 0;
+        width: 90px; height: 90px; /* full circle! */
+        border-radius: 50%;
+        box-sizing: border-box;
+        border: 5px solid #eee;     /* half gray, */
+        border-bottom-color: #0bf;  /* half azure */
+        border-right-color: #0bf;
+    }
     /*progress bar CSS*/
     .progress {
        margin-bottom: 0px;
@@ -16,7 +41,7 @@
         border: none;
         padding: 10px 15px;
         font-size: 20px;
-        cursor: pointer;
+        cursor: pointer;    
     }
 
     .openBtn:hover {
@@ -190,7 +215,7 @@
     }
     
     div.repo_menu{
-        padding-top: 10px;
+        padding-top: 0px;
     }
     
     /*Ontologies CSS table*/
@@ -216,6 +241,37 @@
         text-align: center;
         background-color: #0e4a5d;
         color: white;
+    }
+    /*Style for the configuration buttons*/
+    .config_but{
+        display:flex;
+    }
+    .update_config{
+        display: block;
+        width: 66.6%;
+        border: none;
+        background-color: #267fb2;
+        padding: 14px 28px;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+        border-bottom-left-radius: 10px;
+        font-family: 'Rubik', sans-serif;
+        color: #fff;
+    }
+    
+    .stop_watching{
+        display: block;
+        width: 33.4%;
+        border: none;
+        background-color: #ff3636;
+        padding: 14px 28px;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+        border-bottom-right-radius: 10px;
+        font-family: 'Rubik', sans-serif;
+        color: #fff;
     }
 </style>
 <script>
@@ -255,15 +311,55 @@
   <!--h2>Collapsed Sidebar</h2-->
   <!--p>Content...</p-->
 </div>
+
+<!--Script for the circular progress bar-->
+
+
 <!--Tittle of the repository-->
-<h2 class="repo_tittle">{{repos[index].url}}</h2>
-<!--Progress bar-->
+<div style="display: inline-flex;width: 100%;padding-top: 20px">
+    <div style="width: 20%;">
+        <div class="progressBar">
+        <div class="barOverflow">
+        <div class="bar"></div>
+        </div>
+        <span>{{repos[index].progress}}</span>%
+        </div>
+    </div>
+    <div style="width: 60%;">
+        <h2 class="repo_tittle">{{repos[index].url}}</h2>
+    </div>
+    <div style="width: 20%;">
+        <h4>Last Used: {{repos[index].last_used}}</h4>
+    </div>
+</div>
+
+<script>
+    $(".progressBar").each(function(){
+
+    var $bar = $(this).find(".bar");
+    var $val = $(this).find("span");
+    var perc = parseInt( $val.text(), 10);
+
+    $({p:0}).animate({p:perc}, {
+    duration: 3000,
+    easing: "swing",
+    step: function(p) {
+      $bar.css({
+        transform: "rotate("+ (45+(p*1.8)) +"deg)", // 100%=180° so: ° = % * 1.8
+        // 45 is to add the needed rotation to have the green borders at the bottom
+      });
+      $val.text(p|0);
+    }
+    });
+    }); 
+</script>
+<!--Progress bar
 <div class="progress">
   <div class="progress-bar progress-bar-striped active" role="progressbar"
   aria-valuenow=40 aria-valuemin="0" aria-valuemax="100" style="width:40%">
     40%
   </div>
-</div>
+</div>-->
 
 
 
@@ -476,7 +572,7 @@ function GetURLParameter(sParam)
 <div class="repo_menu">
     <ul class="repo_menu">
     <li class="repo_menu">
-        <a style="text-decoration:none" href="#">
+        <a style="text-decoration:none" href="http://www.github.com/{{repos[index].url}}" target="_blank">
             <div class="icon">
                 <i class="fab fa-github"></i>
                 <i class="fab fa-github"></i>
@@ -523,8 +619,10 @@ function GetURLParameter(sParam)
 </ul>
 </div>
 
+
 <table id="table_ontology">
   <tr>
+    <th>Themis</th>
     <th>Ontology</th>
     <th>Diagrams</th>
     <th>Evaluation</th>
@@ -533,54 +631,53 @@ function GetURLParameter(sParam)
     <th>Bundle</th>  
   </tr>
   <tr>
-    <td>Ontology_name_1.ttl</td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
+    {%for o in ontologies%}
+    {% if 'themis_results' in o %}
+    <td>{{o.themis_results}} %</td>
+    {%else%}
+    <td>No</td>
+    {%endif%}
+      
+    {%if o.published%}
+    <td style="display: grid"><a href="https://github.com/{{repos[index].url}}/blob/master/{{o.ontology}}" target="_blank">{{o.ontology}}</a>
+        <a href="https://w3id.org/def/{{o.pname}}" target="_blank">[{{o.pname}}:https://w3id.org/def/{{o.pname}}]</a></td>
+    {%else%}
+      <td><a href="https://github.com/{{repos[index].url}}/blob/master/{{o.ontology}}" target="_blank">{{o.ontology}}</a></td>  
+    {%endif%}
+    {%if o.ar2dtool%}
+    <td><input type="checkbox" id="ar2dtool" name="{{o.ontology}}-ar2dtool" checked></td>
+    {%else%}
+    <td><input type="checkbox" id="ar2dtool" name="{{o.ontology}}-ar2dtool"></td>
+    {%endif%}
+    {%if o.oops%}
+    <td><input type="checkbox" id="oops" name="{{o.ontology}}-oops" checked></td>
+    {%else%}
+    <td><input type="checkbox" id="oops" name="{{o.ontology}}-oops"></td>
+    {%endif%}
+    {%if o.widoco%}
+    <td><input type="checkbox" id="widoco" name="{{o.ontology}}-widoco" checked></td>
+    {%else%}
+    <td><input type="checkbox" id="widoco" name="{{o.ontology}}-widoco"></td>
+    {%endif%}
+    {%if o.published%}
+    <td><button class="btn"><i class="fas fa-redo"></i></button></td>
+    {%else%}
     <td><button class="btn"><i class="fas fa-upload"></i></button></td>
+    {%endif%}
     <td><button class="btn"><i class="fas fa-download"></i></button></td>
   </tr>
-  <tr>
-    <td>Ontology_name_2.ttl</td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><button class="btn"><i class="fas fa-upload"></i></button></td>
-    <td><button class="btn"><i class="fas fa-download"></i></button></td>
-  </tr>
-  <tr>
-    <td>Ontology_name_3.ttl</td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><button class="btn"><i class="fas fa-upload"></i></button></td>
-    <td><button class="btn"><i class="fas fa-download"></i></button></td>
-  </tr>
-  <tr>
-    <td>Ontology_name_4.ttl</td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><button class="btn"><i class="fas fa-upload"></i></button></td>
-    <td><button class="btn"><i class="fas fa-download"></i></button></td>
-  <tr>
-    <td>Ontology_name_5.ttl</td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><button class="btn"><i class="fas fa-upload"></i></button></td>
-    <td><button class="btn"><i class="fas fa-download"></i></button></td>
-  </tr>
-  <tr>
-    <td>Ontology_name_5.ttl</td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-    <td><button class="btn"><i class="fas fa-upload"></i></button></td>
-    <td><button class="btn"><i class="fas fa-download"></i></button></td>
-  </tr>
+    {%endfor%}
 </table>
+<div class="config_but">
+     <button type="button" class="update_config">Update Configuration</button>
+     <button type="button" onclick="stopConfirm()"class="stop_watching">Stop Watching</button> 
+</div>
 
+<script>
+function stopConfirm() {
+  confirm("Are you sure you want to unwatch this repo?");
+}
+</script>
 {% if manager%}
 <a href="show_repos_list"><div class="btn btn-primary form-control">See live repos list</div></a><br><br>
 <a href="show_stats"><div class="btn btn-primary form-control">Show stats</div></a><br><br>

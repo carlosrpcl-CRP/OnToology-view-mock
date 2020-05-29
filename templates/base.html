@@ -22,7 +22,17 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="https://raw.githubusercontent.com/OnToology/OnToology/master/media/icons/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
-
+    
+    <!--CRP-->
+    <!--Google fonts-->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@900&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@700&display=swap" rel="stylesheet">
+    <!--/Google fonts-->
+    <!--Bootstrap 4-->
+    <script src="https://kit.fontawesome.com/a7df2c3eeb.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--/Bootstrap 4-->
+    <!--CRP-->
 
     <!-- Bootstrap -->
 
@@ -32,7 +42,17 @@
      <!--<link rel="stylesheet" href="{{MEDIA_URL}}css/bootstrap-theme.min.css">-->
      <!--<link rel="stylesheet" href="{{MEDIA_URL}}css/cover.css">-->
      <!--<script src="{{MEDIA_URL}}js/bootstrap.min.js"></script>-->
-
+    
+    <!--/CRP-->
+    <style>
+        h2.repo_tittle{
+            color:#0B2161;
+            text-align: center;
+            font-size: xx-large;
+            
+        }
+    </style>
+    <!--CRP addition-->
     <style>
         .color0back{background-color: #000000 !important;}
         .color0{color: #000000 !important;}
@@ -202,7 +222,87 @@
             border-radius:0px
         }
     </style>
+    
+    <style>
+        /* The sidebar menu */
+        .sidebar {
+            height: 100%; /* 100% Full-height */
+            width: 0; /* 0 width - change this with JavaScript */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Stay on top */
+            top: 0;
+            left: 0;
+            background-color: #111; /* Black*/
+            overflow-x: hidden; /* Disable horizontal scroll */
+            padding-top: 60px; /* Place content 60px from the top */
+            transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+        }
 
+        /* The sidebar links */
+        .sidebar a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        /* When you mouse over the navigation links, change their color */
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
+
+        /* Position and style the close button (top right corner) */
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        /* The button used to open the sidebar */
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #111;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 25px;
+        }
+
+        .openbtn:hover {
+            background-color: #444;
+        }
+
+        /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+        #main {
+            transition: margin-left .5s; /* If you want a transition effect */
+            padding: 20px;
+        }
+
+        /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+        @media screen and (max-height: 450px) {
+            .sidebar {padding-top: 15px;}
+            .sidebar a {font-size: 18px;}
+        } 
+    </style>
+    
+    <script>
+        /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "250px";
+            document.getElementById("main").style.marginLeft = "250px";
+        }
+
+        /* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
+        } 
+    </script>
     <!-- Latest compiled and minified CSS -->
 
 
